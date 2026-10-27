@@ -21,6 +21,12 @@ touch "$D/sshd/authorized_keys"
 grep -qF "$(cat "$here/authorized_keys")" "$D/sshd/authorized_keys" || cat "$here/authorized_keys" >> "$D/sshd/authorized_keys"
 chmod 600 "$D/sshd/authorized_keys"
 echo "== authorized_keys: $(wc -l < "$D/sshd/authorized_keys") key(s), cksum $(cksum < "$D/sshd/authorized_keys")"
+# Git on the Dot: credentials live in /workspace (survives VM replacement); ~/.gitconfig does not, so re-point it every run.
+if [ -f /workspace/.git-credentials ]; then
+  git config --global credential.helper "store --file /workspace/.git-credentials"
+  git config --global http.proxy "$HTTP_PROXY"; git config --global https.proxy "$HTTPS_PROXY"
+  echo "== git: credential store /workspace/.git-credentials and proxy configured"
+fi
 echo "== starting tailscale login (approve the URL it prints; it waits up to 3 minutes)"
 bash "$D/start.sh" login; rc=$?
 echo "== start.sh exit $rc (0 running, 10 needs auth, 13 needs admin approval)"
