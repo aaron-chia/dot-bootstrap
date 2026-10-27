@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# dot-shell [command...]: interactive shell (or one command) on the ChatGPT Dot's computer via the `dot` ssh host.
+# The Dot's sshd runs as a normal user and can't chown a pseudo-terminal, so any ssh session that asks for one is
+# closed ("Connection closed by remote host"). Instead the pty is created remotely by script(1) and, when stdin is a
+# terminal, the local terminal is put in raw mode so keys pass straight through.
+set -u
+cols=$(tput cols 2>/dev/null || echo 120); rows=$(tput lines 2>/dev/null || echo 40)
+if [ $# -gt 0 ]; then inner=$(printf '%q ' "$@"); else inner='bash -l'; fi
+remote="stty cols $cols rows $rows 2>/dev/null; export TERM=${TERM:-xterm-256color}; exec $inner"
+if [ -t 0 ]; then
+  stty raw -echo; trap 'stty sane' EXIT
+fi
+ssh -T dot "script -qfc $(printf '%q' "$remote") /dev/null"

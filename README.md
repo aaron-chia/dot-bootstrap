@@ -1,6 +1,6 @@
 # dot-bootstrap
 
-In: the script and public key that put user-level Tailscale + sshd (abruption/dots-tailscale) on a ChatGPT Dot's cloud computer and authorise devbox-codex-dots to ssh in.
+In: the script and public key that put user-level Tailscale + sshd (abruption/dots-tailscale) on a ChatGPT Dot's cloud computer, authorise devbox-codex-dots to ssh in, and `dot-shell`, the client-side wrapper that gives an interactive shell there (installed as a copy in the box's ~/.local/bin).
 Out: anything about the Dot's tasks or repos (those live in the project mirrors); Tailscale policy (admin console).
 
 Public on purpose: the Dot's computer can only fetch from hosts its proxy allows, GitHub among them, and a private repo has no credentials there. Nothing here is secret: `authorized_keys` is a public key.
